@@ -1,0 +1,86 @@
+-- basic config
+-- how to check keymap: `:nmap <key>`
+local opt = vim.opt
+opt.mouse = 'a'
+opt.title = true
+opt.number = true
+opt.clipboard = 'unnamedplus'
+opt.smartindent = true
+opt.shiftwidth = 4
+opt.expandtab = true
+vim.g.mapleader = ','
+-- <Esc> -> 'jj'
+vim.keymap.set('i', 'jj', '<Esc>')
+
+-- config for barbar(buffer)
+-- Move to previous/next
+vim.keymap.set('n', '<C-p>', function()
+  vim.cmd('BufferPrevious')
+end)
+vim.keymap.set('n', '<C-n>', function()
+  vim.cmd('BufferNext')
+end)
+-- Close buffer
+vim.keymap.set('n', '<leader>e', function()
+  vim.cmd('BufferClose')
+end)
+
+-- delete all buffer
+vim.keymap.set('n', '<leader>x', function()
+  for _, bufnr in ipairs(vim.api.nvim_list_bufs()) do
+    -- Delete only if buffer is loaded and unchanged
+    if vim.api.nvim_buf_is_loaded(bufnr) and not vim.bo[bufnr].modified then
+      vim.api.nvim_buf_delete(bufnr, { force = true })
+    end
+  end
+end)
+
+vim.keymap.set('n', '<leader>cx', function()
+  local cwd = vim.fn.getcwd()
+  local regex = vim.regex('^' .. cwd)
+
+  for _, bufnr in ipairs(vim.api.nvim_list_bufs()) do
+    local path = vim.api.nvim_buf_get_name(bufnr)
+    if not regex:match_str(path) then
+      vim.api.nvim_buf_delete(bufnr, { force = true })
+    end
+  end
+end, {
+  noremap = true,
+  silent = true,
+  desc = 'Delete all buffers referencing files in directories that are not the working directory',
+})
+
+vim.keymap.set('n', '<leader>p', function()
+  -- information of current buffer
+  local path = vim.api.nvim_buf_get_name(0)
+
+  -- when path is not exist
+  if path and path ~= '' then
+    print(path)
+  else
+    print('Buffer is not associated with a file')
+  end
+end, { noremap = true, silent = true, desc = 'Print current file path' })
+
+-- Toggle Markdown checkbox  : [ ] <-> [x]
+vim.keymap.set('n', '<leader>cl', function()
+  local line = vim.api.nvim_get_current_line()
+  if line:match('%[ %]') then
+    line = line:gsub('%[ %]', '[x]', 1)
+  elseif line:match('%[x%]') then
+    line = line:gsub('%[x%]', '[ ]', 1)
+  end
+  vim.api.nvim_set_current_line(line)
+end, { noremap = true, silent = true, desc = 'Toggle Markdown checkbox' })
+
+-- delete all buffers when buffer name match regex pattern
+vim.api.nvim_create_user_command('Bx', function(opts)
+  local pattern = vim.regex(opts.args)
+  for _, bufnr in ipairs(vim.api.nvim_list_bufs()) do
+    local buffer_name = vim.api.nvim_buf_get_name(bufnr)
+    if vim.api.nvim_buf_is_loaded(bufnr) and not vim.bo[bufnr].modified and pattern:match_str(buffer_name) then
+      vim.api.nvim_buf_delete(bufnr, { force = true })
+    end
+  end
+end, { nargs = 1 })

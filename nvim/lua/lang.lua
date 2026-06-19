@@ -28,3 +28,6 @@ vim.lsp.enable({ 'clangd' })
 
 -- get menu for cmp
 vim.opt.completeopt = { 'menuone', 'noselect', 'noinsert' }
+vim.o.autocomplete = true
+vim.o.autocompletedelay = 250
+vim.o.complete = '.,w,b,o'

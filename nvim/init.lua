@@ -12,6 +12,22 @@ vim.g.mapleader = ','
 -- <Esc> -> 'jj'
 vim.keymap.set('i', 'jj', '<Esc>')
 
+-- theme
+vim.cmd([[set notermguicolors]])
+-- set color of column number
+vim.cmd([[highlight LineNr ctermbg=NONE ctermfg=magenta guibg=NONE guifg=magenta]])
+
+-- hightlight
+vim.cmd([[highlight Normal ctermbg=none]])
+vim.cmd([[highlight NonText ctermbg=none]])
+vim.cmd([[highlight LineNr ctermbg=none]])
+vim.cmd([[highlight Folded ctermbg=none]])
+vim.cmd([[highlight EndOfBuffer ctermbg=none]])
+
+-- latex syntax
+vim.cmd([[let g:tex_conceal = '']])
+vim.cmd([[syntax enable]])
+
 -- config for barbar(buffer)
 -- Move to previous/next
 vim.keymap.set('n', '<C-p>', function()

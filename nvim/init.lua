@@ -1,3 +1,6 @@
+-- lang
+require('lang')
+
 -- basic config
 -- how to check keymap: `:nmap <key>`
 local opt = vim.opt

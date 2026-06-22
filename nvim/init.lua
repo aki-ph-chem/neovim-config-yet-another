@@ -1,6 +1,6 @@
 -- lang
-require('lang')
 require('lsp')
+require('languages')
 
 -- basic config
 -- how to check keymap: `:nmap <key>`
